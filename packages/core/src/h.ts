@@ -2,7 +2,7 @@ import {flattenArray} from './util'
 
 export interface VNode {
   type: string | Function,
-  props: object,
+  props: { [prop: string]: any },
   children: any[],
   nodeType?: NODE_YPE,
 

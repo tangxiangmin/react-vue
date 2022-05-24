@@ -1,8 +1,9 @@
-import {reactive, effect} from "@vue/reactivity";
+import {reactive, effect,ref} from "@vue/reactivity";
 
 export {
   reactive,
-  effect
+  effect,
+  ref
 }
 
 // 下面是简单的实现

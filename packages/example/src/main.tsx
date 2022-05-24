@@ -1,6 +1,7 @@
-import {h, reactive, createApp} from "@shymean/react-vue";
+import {h, reactive, createApp, ref} from "@shymean/react-vue";
 import {ReactElement,} from "react";
 
+import style from './index.css'
 
 type CountProps = {
   value: number
@@ -66,14 +67,35 @@ function List() {
   return render as unknown as ReactElement
 }
 
+function TextPanel() {
+  const data = reactive({
+    html: '<h1>hello world</h1>'
+  })
+
+  const onInput = (e: any) => {
+    data.html = e.target?.value
+  }
+
+  const render = () => {
+    return (<div>
+      <textarea onInput={onInput}/>
+      <div dangerouslySetInnerHTML={{__html: data.html}}/>
+
+    </div>)
+  }
+
+  return render as unknown as ReactElement
+}
+
 function App() {
 
   const render = () => {
     return (<div>
-      <h1>hello</h1>
+      <h1 className="title">hello</h1>
       <div>
         <p>counter</p>
         <Count value={10}/>
+        <TextPanel/>
       </div>
       <List/>
     </div>)
