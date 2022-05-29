@@ -1,5 +1,5 @@
-import {NODE_YPE, VNode} from "./h";
-import {effect} from "./reactive";
+import {IComponent, NODE_YPE, VNode} from "./h";
+import {effect, reactive} from "./reactive";
 import {patch} from './patch'
 
 
@@ -80,9 +80,13 @@ function mountElement(nextVNode: VNode, parentDOM: Element) {
 }
 
 function mountComponent(nextVNode: VNode, parentDOM: Element) {
-  const {type, props} = nextVNode
-  // todo 处理props变化的情况
-  const render = (type as Function)(props)
+  // 监听props的变化
+  const props = reactive(nextVNode.props)
+
+  // 创建组件
+  const render = (nextVNode.type as Function)(props)
+
+  nextVNode.$instance = {props, render} as IComponent
 
   let last: VNode
   // 收集render方法中的依赖，注册回调

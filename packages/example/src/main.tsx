@@ -87,17 +87,45 @@ function TextPanel() {
   return render as unknown as ReactElement
 }
 
+// 这里不能用解构赋值，不然会失去响应式
+function DisplayText(props: { text: string }) {
+  const render = () => {
+    return (<div>
+      text is {props.text}
+    </div>)
+  }
+
+  return render as unknown as ReactElement
+}
+
+function DisplayPanel() {
+  const data = reactive({
+    text: 'hello'
+  })
+  const onClick = () => {
+    data.text = Math.random().toString()
+  }
+  const render = () => {
+    return (<div>
+      <button onClick={onClick}>random</button>
+      <DisplayText text={data.text}/>
+    </div>)
+  }
+
+  return render as unknown as ReactElement
+}
+
 function App() {
 
   const render = () => {
     return (<div>
       <h1 className="title">hello</h1>
       <div>
-        <p>counter</p>
+        <DisplayPanel/>
         <Count value={10}/>
         <TextPanel/>
+        <List/>
       </div>
-      <List/>
     </div>)
   }
 

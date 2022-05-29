@@ -1,5 +1,5 @@
 // 参考inferno patch
-import {NODE_YPE, VNode} from "./h";
+import {IComponent, NODE_YPE, VNode} from "./h";
 import {mount, unmount, normalizeEventName, isEventProp} from "./mount";
 import {isNullOrUndef} from "./util";
 
@@ -58,7 +58,27 @@ function patchElement(lastVNode: VNode, nextVNode: VNode) {
 }
 
 function patchComponent(lastVNode: VNode, nextVNode: VNode) {
-  console.log('patchComponent')
+  const $instance = lastVNode.$instance as IComponent
+  nextVNode.$instance = $instance
+
+  const lastProps = $instance.props
+  const nextProps = nextVNode.props
+
+  // $instance props是响应的，变化后会触发render
+  for (const prop in nextProps) {
+    const lastValue = lastProps[prop]
+    const nextValue = nextProps[prop]
+    if (lastValue !== nextValue) {
+      lastProps[prop] = nextProps[prop]
+    }
+  }
+
+  for (const prop in lastProps) {
+    const lastValue = lastProps[prop]
+    if (isNullOrUndef(nextProps[prop]) && !isNullOrUndef(lastValue)) {
+      delete lastProps[prop]
+    }
+  }
 }
 
 export function patch(lastVNode: VNode | undefined, nextVNode: VNode, parentDOM: Element,) {

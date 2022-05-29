@@ -1,4 +1,10 @@
-import {flattenArray} from './util'
+import {flattenArray, isNullOrUndef} from './util'
+
+export interface IComponent {
+  props: any,
+  render: Function,
+}
+
 
 export interface VNode {
   type: string | Function,
@@ -8,6 +14,7 @@ export interface VNode {
 
   $parent?: VNode | undefined
   $el?: Element | HTMLElement | Text | undefined,
+  $instance?: IComponent | undefined
 }
 
 
@@ -27,7 +34,7 @@ function getNodeType(node: VNode): NODE_YPE {
 export function h(type: any, props: any, ...children: any[]): VNode {
   const node: VNode = {
     type,
-    props,
+    props: isNullOrUndef(props) ? {} : props,
     children
   }
 
