@@ -3,7 +3,7 @@ export const flattenArray = function (arr: Array<any>) {
   for (let i = 0; i < arr.length; ++i) {
     if (Array.isArray(arr[i])) {
       ans = ans.concat(flattenArray(arr[i]))
-    } else {
+    } else if(!isNullOrUndef(arr[i])){
       ans.push(arr[i])
     }
   }

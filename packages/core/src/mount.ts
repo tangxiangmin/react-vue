@@ -1,7 +1,7 @@
 import {IComponent, NODE_YPE, VNode} from "./h";
 import {effect, reactive} from "./reactive";
 import {patch} from './patch'
-
+import host from './host'
 
 export function isEventProp(prop: string): boolean {
   return prop.indexOf('on') === 0
@@ -60,23 +60,26 @@ export function unmount(lastVNode: VNode, parentDOM: Element) {
   }
 }
 
-
 function mountText(nextVNode: VNode, parentDOM: Element) {
-  const text = document.createTextNode(nextVNode.type as string)
+  const text = host.createText(nextVNode.type as string)
   nextVNode.$el = text
-  parentDOM.appendChild(text)
+
+  const anchor = nextVNode.$sibling?.$el as Element
+  host.insert(text, parentDOM, anchor)
 }
 
 function mountElement(nextVNode: VNode, parentDOM: Element) {
   const {type, props, children} = nextVNode
-  const dom = document.createElement(type as string)
+  const dom = host.createElement(type as string)
   createAttrs(dom, props)
 
   children.forEach(child => {
     mount(child, dom)
   })
   nextVNode.$el = dom
-  parentDOM.appendChild(dom)
+
+  const anchor = nextVNode.$sibling?.$el as Element
+  host.insert(dom, parentDOM, anchor)
 }
 
 function mountComponent(nextVNode: VNode, parentDOM: Element) {
@@ -95,4 +98,9 @@ function mountComponent(nextVNode: VNode, parentDOM: Element) {
     patch(last, child, parentDOM)
     last = child
   }, {lazy: false})
+}
+
+export function moveVNode(vNode: VNode, parentDOM: Element) {
+  const anchor = vNode.$sibling?.$el as Element
+  host.insert(vNode.$el as Element, parentDOM, anchor)
 }

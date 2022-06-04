@@ -11,10 +11,11 @@ export interface VNode {
   props: { [prop: string]: any },
   children: any[],
   nodeType?: NODE_YPE,
+  key: undefined | number | string;
 
-  $parent?: VNode | undefined
-  $el?: Element | HTMLElement | Text | undefined,
-  $instance?: IComponent | undefined
+  $el?: Element | HTMLElement | Text | null,
+  $instance?: IComponent | undefined,
+  $sibling?: VNode //下一个节点
 }
 
 
@@ -35,23 +36,33 @@ export function h(type: any, props: any, ...children: any[]): VNode {
   const node: VNode = {
     type,
     props: isNullOrUndef(props) ? {} : props,
-    children
+    children,
+    key: isNullOrUndef(props) ? undefined : props.key,
   }
 
   node.nodeType = getNodeType(node)
 
-  node.children = flattenArray(children).map(child => {
+  const list = flattenArray(children)
+  let prev: VNode
+  node.children = list.map(child => {
     const nodeType = getNodeType(child)
+    let node
     if (nodeType === NODE_YPE.TEXT) {
-      return {
+      node = {
         type: child,
-        $parent: node,
         nodeType
       }
+    } else {
+      child.nodeType = nodeType
+      node = child
     }
-    child.nodeType = nodeType
-    child.$parent = node
-    return child
+    if (prev) {
+      prev.$sibling = node
+    }
+
+    prev = node
+
+    return node
   })
 
   return node

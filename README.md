@@ -2,7 +2,10 @@
 
 ## react-vue
 
-一个mini的类Vue框架，借助`@vue/reactivity`实现双向绑定，借助`Babel`编写TSX，兼备React和Vue的开发体验
+一个mini的类Vue框架，兼备React和Vue的开发体验
+* [x] `JSX`强大的表现力
+* [x] `@vue/reactivity`双向绑定
+* [ ]` scoped css`
 
 
 示例：

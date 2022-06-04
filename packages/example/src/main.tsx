@@ -24,7 +24,7 @@ function Count({value = 0}: CountProps) {
 
 function List() {
   const data = reactive({
-    list: [1, 2, 3, 4, 5]
+    list: [10, 20, 30, 40, 50]
   })
 
   const add = () => {
@@ -34,18 +34,11 @@ function List() {
     data.list.pop()
   }
 
-  const shuffleList = (arr: number[]) => {
-    let result = [], random;
-    while (arr.length > 0) {
-      random = Math.floor(Math.random() * arr.length);
-      result.push(arr[random])
-      arr.splice(random, 1)
-    }
-    return result;
-  }
-
   const shuffle = () => {
-    data.list = shuffleList(data.list)
+    // todo fix 这里直接data.list.sort()会报错
+    data.list = data.list.slice().sort((a, b) => Math.random() - 0.5)
+    // data.list = [10, 30, 20, 50, 40]
+    // console.log(data.list)
   }
 
   const render = () => {
@@ -56,7 +49,7 @@ function List() {
       <ul>
         {
           data.list.map((row: number) => {
-            return (<li>
+            return (<li key={row}>
               {row}
             </li>)
           })
@@ -121,9 +114,9 @@ function App() {
     return (<div>
       <h1 className="title">hello</h1>
       <div>
-        <DisplayPanel/>
-        <Count value={10}/>
-        <TextPanel/>
+        {/*<DisplayPanel/>*/}
+        {/*<Count value={10}/>*/}
+        {/*<TextPanel/>*/}
         <List/>
       </div>
     </div>)
