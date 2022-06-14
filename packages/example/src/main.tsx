@@ -1,4 +1,4 @@
-import {h, reactive, createApp} from "@shymean/react-vue";
+import {h, reactive, createApp, renderHTML} from "@shymean/react-vue";
 import {RouterView, useHistory} from "@shymean/react-vue-router";
 
 import style from './index.css'
@@ -163,7 +163,12 @@ function App() {
 }
 
 
+// web应用
 // @ts-ignore
 createApp(<App/>).mount(document.querySelector('#root')!)
 
-// List()
+
+// ssr
+// @ts-ignore
+// const html = renderHTML(<App/>)
+// console.log(html)

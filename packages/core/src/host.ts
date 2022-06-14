@@ -1,9 +1,9 @@
-function isFilterProp(prop: string): boolean {
+export function isFilterProp(prop: string): boolean {
   let blackList = ['key', 'children', 'context']
   return blackList.includes(prop)
 }
 
-function isEventProp(prop: string): boolean {
+export function isEventProp(prop: string): boolean {
   return prop.indexOf('on') === 0
 }
 
@@ -50,8 +50,23 @@ const dom = {
   }
 }
 
-// const otherPlatform = {}
+// SSR环境不做任何处理，最后使用renderHTML渲染
+const ssr = {
+  insert(child: Text | Element, parent: Element, anchor: Element | null) {
+  },
+  remove(child: Element) {
+  },
+  createText(content: string) {
+  },
+  createElement(type: string) {
+  },
+  setAttribute(dom: Element, prop: string, lastValue: any, nextValue: any) {
+  }
+}
 
 // 预留其他平台的钩子
+// const otherPlatform = {}
 
-export default dom
+const isBrowser = typeof window !== 'undefined'
+
+export default isBrowser ? dom : ssr
