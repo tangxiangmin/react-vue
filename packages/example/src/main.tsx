@@ -1,11 +1,12 @@
 import {h, reactive, createApp, ref} from "@shymean/react-vue";
-import {ReactElement,} from "react";
+import {RouterView} from "@shymean/react-vue-router";
 
 import style from './index.css'
 
 type CountProps = {
   value: number
 }
+
 
 function Count({value = 0}: CountProps) {
   const data = reactive({
@@ -19,7 +20,7 @@ function Count({value = 0}: CountProps) {
     return (<button onClick={onClick}>click {data.count} </button>)
   }
 
-  return render as unknown as ReactElement
+  return render
 }
 
 function List() {
@@ -35,10 +36,7 @@ function List() {
   }
 
   const shuffle = () => {
-    // todo fix 这里直接data.list.sort()会报错
-    data.list = data.list.slice().sort((a, b) => Math.random() - 0.5)
-    // data.list = [10, 30, 20, 50, 40]
-    // console.log(data.list)
+    data.list.sort(() => Math.random() - 0.5)
   }
 
   const render = () => {
@@ -57,7 +55,8 @@ function List() {
       </ul>
     </div>)
   }
-  return render as unknown as ReactElement
+  // return render
+  return render
 }
 
 function TextPanel() {
@@ -77,7 +76,7 @@ function TextPanel() {
     </div>)
   }
 
-  return render as unknown as ReactElement
+  return render
 }
 
 // 这里不能用解构赋值，不然会失去响应式
@@ -88,7 +87,7 @@ function DisplayText(props: { text: string }) {
     </div>)
   }
 
-  return render as unknown as ReactElement
+  return render
 }
 
 function DisplayPanel() {
@@ -105,8 +104,44 @@ function DisplayPanel() {
     </div>)
   }
 
-  return render as unknown as ReactElement
+  return render
 }
+
+const Demo = () => {
+  const render =  () => {
+    return (<div> this is demo</div>)
+  }
+  return render
+}
+
+
+const Home = () => {
+  return () => {
+    return (<div>
+      {/*<DisplayPanel/>*/}
+      <Count value={10}/>
+      {/*<TextPanel/>*/}
+      {/*<List/>*/}
+      <Demo/>
+    </div>)
+  }
+}
+const About = () => {
+  return () => {
+    return (<div> this is about</div>)
+  }
+}
+
+
+const routes = [
+  {
+    path: '/',
+    component: Home
+  }, {
+    path: '/about',
+    component: About
+  }
+]
 
 function App() {
 
@@ -114,15 +149,14 @@ function App() {
     return (<div>
       <h1 className="title">hello</h1>
       <div>
-        {/*<DisplayPanel/>*/}
-        {/*<Count value={10}/>*/}
-        {/*<TextPanel/>*/}
-        <List/>
+        <button>to home</button>
+        <button>to about</button>
       </div>
+      <RouterView routes={routes}/>
     </div>)
   }
 
-  return render as unknown as ReactElement
+  return render
 }
 
 

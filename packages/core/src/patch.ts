@@ -1,34 +1,16 @@
-// 参考inferno patch
 import {IComponent, NODE_YPE, VNode} from "./h";
+
 import {
   mount,
   unmount,
-  normalizeEventName,
-  isEventProp,
   moveVNode
 } from "./mount";
 import {isNullOrUndef} from "./util";
+import host from "./host";
 
 
 function isSameNode(lastVNode: VNode, nextVNode: VNode) {
   return lastVNode?.type === nextVNode?.type
-}
-
-function patchProp(prop: string, lastValue: any, nextValue: any, dom: Element) {
-  if (prop === 'dangerouslySetInnerHTML') {
-    if (lastValue !== nextValue) {
-      dom.innerHTML = nextValue.__html;
-    }
-  } else if (isEventProp(prop)) {
-    const eventName = normalizeEventName(prop)
-    if (lastValue) {
-      dom.removeEventListener(eventName, lastValue)
-    }
-    dom.addEventListener(eventName, nextValue)
-  } else {
-    if (prop === 'className') prop = 'class'
-    dom.setAttribute(prop, nextValue)
-  }
 }
 
 function patchText(lastVNode: VNode, nextVNode: VNode) {
@@ -48,14 +30,14 @@ function patchElement(lastVNode: VNode, nextVNode: VNode) {
     const lastValue = lastProps[prop]
     const nextValue = nextProps[prop]
     if (lastValue !== nextValue) {
-      patchProp(prop, lastValue, nextValue, dom)
+      host.setAttribute(dom, prop, lastValue, nextValue)
     }
   }
 
   for (const prop in lastProps) {
     const lastValue = lastProps[prop]
     if (isNullOrUndef(nextProps[prop]) && !isNullOrUndef(lastValue)) {
-      patchProp(prop, lastValue, null, dom)
+      host.setAttribute(dom, prop, lastValue, null)
     }
   }
 
@@ -89,7 +71,7 @@ function patchComponent(lastVNode: VNode, nextVNode: VNode) {
 
 export function patch(lastVNode: VNode | undefined, nextVNode: VNode, parentDOM: Element,) {
   if (!lastVNode || !isSameNode(lastVNode, nextVNode)) {
-    lastVNode && unmount(lastVNode, parentDOM)
+    lastVNode && unmount(lastVNode)
 
     mount(nextVNode, parentDOM)
     return
@@ -109,7 +91,6 @@ export function patch(lastVNode: VNode | undefined, nextVNode: VNode, parentDOM:
 }
 
 // 参考inferno 实现的diff
-// https://github.com/NervJS/nerv/issues/3
 function patchChildren(lastChildren: VNode[], nextChildren: VNode[], parentDOM: Element) {
 
   let aNode: VNode = lastChildren[0];
@@ -129,7 +110,7 @@ function patchNonKeyedChildren(lastChildren: VNode[], nextChildren: VNode[], par
     if (nextVNode) {
       patch(lastVNode, nextVNode, parentDOM)
     } else {
-      unmount(lastVNode, parentDOM)
+      unmount(lastVNode)
     }
   }
 
@@ -186,7 +167,7 @@ function patchKeyedChildren(lastChildren: VNode[], nextChildren: VNode[], parent
     }
   } else if (j > bEnd) {
     while (j <= aEnd) {
-      unmount(lastChildren[j++], parentDOM);
+      unmount(lastChildren[j++]);
     }
   } else {
     // 缩小范围后，再处理那些要移动的节点
@@ -207,7 +188,7 @@ function patchKeyedChildrenComplex(lastChildren: VNode[], nextChildren: VNode[],
   lastChildren.forEach((child, index) => {
     const key = child.key as string
     if (!(key in keyIndex)) {
-      unmount(child, parentDOM)
+      unmount(child)
       return
     }
     // 旧节点在新列表中的位置
@@ -223,7 +204,7 @@ function patchKeyedChildrenComplex(lastChildren: VNode[], nextChildren: VNode[],
   // 从后向前是为了使用insertBefore
   for (let i = sources.length - 1; i >= 0; --i) {
     if (sources[i] === 0) {
-      let child = nextChildren[i - 1]
+      let child = nextChildren[i]
       mount(child, parentDOM)
       continue
     }

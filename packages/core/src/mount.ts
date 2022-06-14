@@ -3,38 +3,10 @@ import {effect, reactive} from "./reactive";
 import {patch} from './patch'
 import host from './host'
 
-export function isEventProp(prop: string): boolean {
-  return prop.indexOf('on') === 0
-}
-
-export function normalizeEventName(name: string) {
-  return name.slice(2).toLowerCase();
-}
-
-export function isFilterProp(prop: string): boolean {
-  let blackList = ['key', 'children', 'context', 'dangerouslySetInnerHTML']
-  return blackList.includes(prop)
-}
-
-function setAttribute(el: HTMLElement, prop: string, val: any) {
-  if (prop === 'dangerouslySetInnerHTML') {
-    el.innerHTML = val.__html
-    return
-  }
-  if (isFilterProp(prop)) return
-
-  if (isEventProp(prop)) {
-    el.addEventListener(normalizeEventName(prop), val)
-  } else {
-    if (prop === 'className') prop = 'class'
-    el.setAttribute(prop, val)
-  }
-}
-
 function createAttrs(dom: HTMLElement, props: any) {
   if (!props) return
   Object.keys(props).forEach(key => {
-    setAttribute(dom, key, props[key])
+    host.setAttribute(dom, key, null, props[key])
   })
 }
 
@@ -54,9 +26,9 @@ export function mount(newVNode: VNode, parentDOM: Element) {
 }
 
 // 将vNode对应的dom从页面移除
-export function unmount(lastVNode: VNode, parentDOM: Element) {
-  if (lastVNode) {
-    parentDOM.removeChild(lastVNode.$el as Element)
+export function unmount(lastVNode: VNode) {
+  if (lastVNode?.$el) {
+    host.remove(lastVNode.$el as Element)
   }
 }
 

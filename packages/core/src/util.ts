@@ -13,6 +13,7 @@ export const flattenArray = function (arr: Array<any>) {
 export function isObject(val: unknown) {
   return val !== null && typeof val === 'object'
 }
+
 export function isNullOrUndef(o: any): o is undefined | null {
   return o === void 0 || o === null;
 }
