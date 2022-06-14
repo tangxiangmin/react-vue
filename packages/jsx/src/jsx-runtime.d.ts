@@ -1,10 +1,9 @@
-
 type Key = string | number;
 
 interface ReactElement<P = any, T = any> {
   type: T;
   props: P;
-  key: Key | null;
+  // key: Key | null | undefined;
 }
 
 interface CustomFunctionComponent {
@@ -13,7 +12,7 @@ interface CustomFunctionComponent {
 
 declare global {
   namespace JSX {
-    type Element = ReactElement | CustomFunctionComponent
+    type Element = ReactElement | CustomFunctionComponent | null
 
     interface ElementClass {
       (prop: any): any

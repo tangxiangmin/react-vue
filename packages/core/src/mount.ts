@@ -27,7 +27,14 @@ export function mount(newVNode: VNode, parentDOM: Element) {
 
 // 将vNode对应的dom从页面移除
 export function unmount(lastVNode: VNode) {
-  if (lastVNode?.$el) {
+  if (!lastVNode) return
+  const {nodeType, $instance} = lastVNode
+  if (nodeType === NODE_YPE.COMPONENT) {
+    if ($instance) {
+      unmount($instance.child as VNode)
+    }
+    return
+  } else if (lastVNode?.$el) {
     host.remove(lastVNode.$el as Element)
   }
 }
@@ -69,6 +76,10 @@ function mountComponent(nextVNode: VNode, parentDOM: Element) {
     const child = render()
     patch(last, child, parentDOM)
     last = child
+
+    if (nextVNode.$instance) {
+      nextVNode.$instance.child = child
+    }
   }, {lazy: false})
 }
 

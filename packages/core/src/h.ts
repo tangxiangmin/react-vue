@@ -3,6 +3,7 @@ import {flattenArray, isNullOrUndef} from './util'
 export interface IComponent {
   props: any,
   render: Function,
+  child?: VNode
 }
 
 

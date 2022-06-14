@@ -1,5 +1,5 @@
-import {h, reactive, createApp, ref} from "@shymean/react-vue";
-import {RouterView} from "@shymean/react-vue-router";
+import {h, reactive, createApp} from "@shymean/react-vue";
+import {RouterView, useHistory} from "@shymean/react-vue-router";
 
 import style from './index.css'
 
@@ -16,11 +16,9 @@ function Count({value = 0}: CountProps) {
     data.count++
   }
 
-  const render = () => {
+  return () => {
     return (<button onClick={onClick}>click {data.count} </button>)
   }
-
-  return render
 }
 
 function List() {
@@ -39,7 +37,7 @@ function List() {
     data.list.sort(() => Math.random() - 0.5)
   }
 
-  const render = () => {
+  return () => {
     return (<div>
       <button onClick={add}>add</button>
       <button onClick={remove}>remove</button>
@@ -55,8 +53,6 @@ function List() {
       </ul>
     </div>)
   }
-  // return render
-  return render
 }
 
 function TextPanel() {
@@ -68,7 +64,7 @@ function TextPanel() {
     data.html = e.target?.value
   }
 
-  const render = () => {
+  return () => {
     return (<div>
       <textarea onInput={onInput}/>
       <div dangerouslySetInnerHTML={{__html: data.html}}/>
@@ -76,18 +72,15 @@ function TextPanel() {
     </div>)
   }
 
-  return render
 }
 
 // 这里不能用解构赋值，不然会失去响应式
 function DisplayText(props: { text: string }) {
-  const render = () => {
+  return () => {
     return (<div>
       text is {props.text}
     </div>)
   }
-
-  return render
 }
 
 function DisplayPanel() {
@@ -97,41 +90,45 @@ function DisplayPanel() {
   const onClick = () => {
     data.text = Math.random().toString()
   }
-  const render = () => {
+  return () => {
     return (<div>
       <button onClick={onClick}>random</button>
       <DisplayText text={data.text}/>
     </div>)
   }
-
-  return render
 }
 
 const Demo = () => {
-  const render =  () => {
+  return () => {
     return (<div> this is demo</div>)
   }
-  return render
 }
 
-
 const Home = () => {
+  const data = reactive({
+    flag: true
+  })
+
+  const onToggleFlag = () => {
+    data.flag = !data.flag
+  }
+
   return () => {
+
     return (<div>
-      {/*<DisplayPanel/>*/}
-      <Count value={10}/>
-      {/*<TextPanel/>*/}
-      {/*<List/>*/}
-      <Demo/>
+      <button onClick={onToggleFlag}>toggle {data.flag}</button>
+      {
+        data.flag ? (<Demo/>) : (<DisplayPanel/>)
+      }
+
     </div>)
   }
 }
 const About = () => {
   return () => {
-    return (<div> this is about</div>)
+    return (<div>this is about</div>)
   }
 }
-
 
 const routes = [
   {
@@ -145,18 +142,24 @@ const routes = [
 
 function App() {
 
-  const render = () => {
+  const history = useHistory()
+  const toHome = () => {
+    history.push('/')
+  }
+  const toAbout = () => {
+    history.push('/about')
+  }
+
+  return () => {
     return (<div>
       <h1 className="title">hello</h1>
       <div>
-        <button>to home</button>
-        <button>to about</button>
+        <button onClick={toHome}>to home</button>
+        <button onclick={toAbout}>to about</button>
       </div>
       <RouterView routes={routes}/>
     </div>)
   }
-
-  return render
 }
 
 
