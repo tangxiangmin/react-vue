@@ -2,11 +2,12 @@ import {pathToRegexp} from "path-to-regexp";
 import {h, reactive, VNode} from "@shymean/react-vue";
 
 type Route = {
-  path: string,
+  path?: string,
   component: Function
 }
 type RouterViewProps = {
-  routes: Route[]
+  routes: Route[],
+  initUrl?: string
 }
 
 interface Router {
@@ -41,9 +42,9 @@ export function routeTo(url: string) {
   })
 }
 
-export const RouterView = ({routes}: RouterViewProps) => {
+export const RouterView = ({routes, initUrl}: RouterViewProps) => {
   const router = reactive({
-    url: getCurrentUrl()
+    url: initUrl || getCurrentUrl()
   })
 
   ROUTERS.push({

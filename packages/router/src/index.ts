@@ -1,2 +1,2 @@
 export {useHistory} from './history'
-export {RouterView} from './routerView'
+export {RouterView, getMatchRouteConfig} from './routerView'

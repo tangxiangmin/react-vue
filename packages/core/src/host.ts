@@ -1,3 +1,5 @@
+import {isHydrateProcessing} from './hydrate'
+
 export function isFilterProp(prop: string): boolean {
   let blackList = ['key', 'children', 'context']
   return blackList.includes(prop)
@@ -57,8 +59,10 @@ const ssr = {
   remove(child: Element) {
   },
   createText(content: string) {
+    return null as unknown as Text
   },
   createElement(type: string) {
+    return null as unknown as HTMLElement
   },
   setAttribute(dom: Element, prop: string, lastValue: any, nextValue: any) {
   }
@@ -69,4 +73,10 @@ const ssr = {
 
 const isBrowser = typeof window !== 'undefined'
 
+export function getHost() {
+  return (!isBrowser || isHydrateProcessing()) ? ssr : dom
+}
+
 export default isBrowser ? dom : ssr
+
+// export default dom

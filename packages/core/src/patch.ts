@@ -6,7 +6,7 @@ import {
   moveVNode
 } from "./mount";
 import {isNullOrUndef} from "./util";
-import host from "./host";
+import {getHost} from "./host";
 
 
 function isSameNode(lastVNode: VNode, nextVNode: VNode) {
@@ -30,14 +30,14 @@ function patchElement(lastVNode: VNode, nextVNode: VNode) {
     const lastValue = lastProps[prop]
     const nextValue = nextProps[prop]
     if (lastValue !== nextValue) {
-      host.setAttribute(dom, prop, lastValue, nextValue)
+      getHost().setAttribute(dom, prop, lastValue, nextValue)
     }
   }
 
   for (const prop in lastProps) {
     const lastValue = lastProps[prop]
     if (isNullOrUndef(nextProps[prop]) && !isNullOrUndef(lastValue)) {
-      host.setAttribute(dom, prop, lastValue, null)
+      getHost().setAttribute(dom, prop, lastValue, null)
     }
   }
 

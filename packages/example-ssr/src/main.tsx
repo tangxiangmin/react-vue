@@ -3,12 +3,9 @@ import {RouterView, useHistory} from "@shymean/react-vue-router";
 
 import style from './index.module.css'
 
-console.log(style)
-
 type CountProps = {
   value: number
 }
-
 
 function Count({value = 0}: CountProps) {
   const data = reactive({
@@ -131,19 +128,25 @@ const About = () => {
     return (<div>this is about</div>)
   }
 }
+const NotFound = () => {
+  return () => {
+    return <div>404</div>
+  }
+}
 
-const routes = [
+export const routes = [
   {
     path: '/',
     component: Home
   }, {
     path: '/about',
     component: About
+  }, {
+    component: NotFound
   }
 ]
 
-function App() {
-
+export function App({url}: { url?: string }) {
   const history = useHistory()
   const toHome = () => {
     history.push('/')
@@ -159,19 +162,7 @@ function App() {
         <button onClick={toHome}>to home</button>
         <button onclick={toAbout}>to about</button>
       </div>
-      <RouterView routes={routes}/>
+      <RouterView routes={routes} initUrl={url}/>
     </div>)
   }
 }
-
-
-// web应用
-
-// @ts-ignore
-createApp(<App/>).mount(document.querySelector('#root')!)
-
-
-// ssr
-// @ts-ignore
-// const html = renderHTML(<App/>)
-// console.log(html)

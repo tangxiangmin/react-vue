@@ -1,21 +1,34 @@
-import { VNode} from "./h";
+import {h, VNode} from "./h";
 import {mount} from "./mount";
 import {patch} from "./patch";
-
+import {hydrate} from './hydrate'
 
 function render(oldVNode: VNode | undefined, newVNode: VNode, parent: Element) {
   if (!oldVNode) {
     mount(newVNode, parent)
   } else {
-    patch(oldVNode,newVNode,parent)
+    patch(oldVNode, newVNode, parent)
   }
 }
 
-export function createApp(vNode: VNode) {
+function clearContainer(dom: Element) {
+  Array.from(dom.children).forEach(child => {
+    dom.removeChild(child)
+  })
+}
 
+export function createApp(node:VNode) {
   return {
-    mount(container: Element) {
-      render(undefined, vNode, container)
+    mount(container: HTMLElement) {
+      clearContainer(container)
+      render(undefined, node, container)
+    },
+    // ssr
+    hydrate(container: HTMLElement) {
+      let success = hydrate(node, container)
+      if (!success) {
+        this.mount(container)
+      }
     }
   }
 }

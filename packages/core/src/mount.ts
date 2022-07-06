@@ -1,17 +1,18 @@
 import {IComponent, NODE_YPE, VNode} from "./h";
 import {effect, reactive} from "./reactive";
 import {patch} from './patch'
-import host from './host'
+import {getHost} from './host'
 
-function createAttrs(dom: HTMLElement, props: any) {
+export function createAttrs(dom: HTMLElement, props: any) {
   if (!props) return
   Object.keys(props).forEach(key => {
-    host.setAttribute(dom, key, null, props[key])
+    getHost().setAttribute(dom, key, null, props[key])
   })
 }
 
 // 将vNode挂载到页面上
 export function mount(newVNode: VNode, parentDOM: Element) {
+  if(!newVNode) return
   switch (newVNode.nodeType) {
     case NODE_YPE.TEXT:
       mountText(newVNode, parentDOM)
@@ -35,21 +36,21 @@ export function unmount(lastVNode: VNode) {
     }
     return
   } else if (lastVNode?.$el) {
-    host.remove(lastVNode.$el as Element)
+    getHost().remove(lastVNode.$el as Element)
   }
 }
 
 function mountText(nextVNode: VNode, parentDOM: Element) {
-  const text = host.createText(nextVNode.type as string)
+  const text = getHost().createText(nextVNode.type as string)
   nextVNode.$el = text
 
   const anchor = nextVNode.$sibling?.$el as Element
-  host.insert(text, parentDOM, anchor)
+  getHost().insert(text, parentDOM, anchor)
 }
 
 function mountElement(nextVNode: VNode, parentDOM: Element) {
   const {type, props, children} = nextVNode
-  const dom = host.createElement(type as string)
+  const dom = getHost().createElement(type as string)
   createAttrs(dom, props)
 
   children.forEach(child => {
@@ -58,7 +59,7 @@ function mountElement(nextVNode: VNode, parentDOM: Element) {
   nextVNode.$el = dom
 
   const anchor = nextVNode.$sibling?.$el as Element
-  host.insert(dom, parentDOM, anchor)
+  getHost().insert(dom, parentDOM, anchor)
 }
 
 function mountComponent(nextVNode: VNode, parentDOM: Element) {
@@ -85,5 +86,5 @@ function mountComponent(nextVNode: VNode, parentDOM: Element) {
 
 export function moveVNode(vNode: VNode, parentDOM: Element) {
   const anchor = vNode.$sibling?.$el as Element
-  host.insert(vNode.$el as Element, parentDOM, anchor)
+  getHost().insert(vNode.$el as Element, parentDOM, anchor)
 }

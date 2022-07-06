@@ -5,8 +5,10 @@
 一个mini的类Vue框架，兼备React和Vue的开发体验
 * [x] `JSX`强大的表现力
 * [x] `@vue/reactivity`双向绑定
-* [ ]` scoped css`
-
+* [x] `SSR`渲染
+* [x] `css moudle` vite默认支持
+* [x] `router`路由
+* [ ] `store`状态管理
 
 示例：
 

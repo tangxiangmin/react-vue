@@ -5,6 +5,7 @@ import {mount} from "./mount";
 // 在ssr中，我们需要的不是DOM节点，而是HTML字符串，
 
 function VNode2HTML(root: VNode): string {
+  if (!root) return ''
   let {type, nodeType, props, children} = root
 
   let sub = '' // 获取子节点渲染的html片段
