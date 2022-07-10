@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "types": "src/jsx-runtime.d.ts",
+  "main": "src/jsx-runtime.d.ts",
+  "module": "src/jsx-runtime.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

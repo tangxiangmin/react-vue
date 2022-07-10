@@ -1,9 +1,16 @@
 import {flattenArray, isNullOrUndef} from './util'
+import {EffectScope} from "@vue/reactivity";
 
 export interface IComponent {
   props: any,
   render: Function,
-  child?: VNode
+  child?: VNode,
+  scope: EffectScope
+
+  // 生命周期函数
+  m: Function[] | null
+  um: Function[] | null,
+  u: Function[] | null
 }
 
 
@@ -42,6 +49,7 @@ export function h(type: any, props: any, ...children: any[]): VNode {
   }
 
   node.nodeType = getNodeType(node)
+  node.props.children = children
 
   const list = flattenArray(children)
   let prev: VNode

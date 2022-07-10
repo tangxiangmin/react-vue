@@ -1,9 +1,9 @@
-import {h, reactive, createApp, renderHTML} from "@shymean/react-vue";
+import {h, reactive, createApp, renderHTML, onMounted, onUpdated, onUnMounted} from "@shymean/react-vue";
 import {RouterView, useHistory} from "@shymean/react-vue-router";
 
+// @ts-ignore
 import style from './index.module.css'
-
-console.log(style)
+import {useStore} from "./store";
 
 type CountProps = {
   value: number
@@ -127,6 +127,17 @@ const Home = () => {
   }
 }
 const About = () => {
+  onMounted(() => {
+    console.log('mounted about')
+  })
+
+  onUpdated(() => {
+    console.log('update about')
+  })
+  onUnMounted(() => {
+    console.log('unmounted about')
+  })
+
   return () => {
     return (<div>this is about</div>)
   }
@@ -142,6 +153,22 @@ const routes = [
   }
 ]
 
+
+const SubApp = () => {
+  const store = useStore()
+  console.log('on create')
+
+  onMounted(() => {
+    console.log('on mounted')
+  })
+
+  return () => {
+    return (<div>
+      pure render {store.x}
+    </div>)
+  }
+}
+
 function App() {
 
   const history = useHistory()
@@ -152,12 +179,33 @@ function App() {
     history.push('/about')
   }
 
+  const store = useStore()
+
+  const add = () => {
+    store.addX()
+  }
+
+  // onMounted(() => {
+  //   console.log('mounted app')
+  // })
+  //
+  // onUpdated(() => {
+  //   console.log('update app')
+  // })
+  // onUnMounted(() => {
+  //   console.log('unmounted')
+  // })
+
   return () => {
     return (<div>
       <h1 className={style.title}>hello</h1>
       <div>
         <button onClick={toHome}>to home</button>
         <button onclick={toAbout}>to about</button>
+      </div>
+      <div>
+        <button onClick={add}>click {store.x}</button>
+        {/*<SubApp/>*/}
       </div>
       <RouterView routes={routes}/>
     </div>)

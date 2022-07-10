@@ -1,9 +1,9 @@
 {
-  "name": "@shymean/react-vue",
+  "name": "@shymean/react-vue-store",
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
-  "module": "src/index.ts",
+  "module": "esm/index.js",
   "types": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,7 +12,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@shymean/react-vue": "^1.0.0",
-    "@vue/reactivity": "^3.2.36"
+    "@shymean/react-vue": "workspace:^1.0.0"
   }
 }

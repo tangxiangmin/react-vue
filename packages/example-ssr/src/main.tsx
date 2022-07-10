@@ -1,6 +1,7 @@
 import {h, reactive, createApp, renderHTML} from "@shymean/react-vue";
 import {RouterView, useHistory} from "@shymean/react-vue-router";
 
+// @ts-ignore
 import style from './index.module.css'
 
 type CountProps = {

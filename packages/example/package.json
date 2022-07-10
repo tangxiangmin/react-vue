@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "@shymean/react-vue": "workspace:^1.0.0",
-    "@shymean/react-vue-router": "workspace:^1.0.0"
+    "@shymean/react-vue-router": "workspace:^1.0.0",
+    "@shymean/react-vue-store": "workspace:^1.0.0"
   },
   "devDependencies": {
     "@shymean/react-vue-jsx": "workspace:^1.0.0",

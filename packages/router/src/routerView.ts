@@ -1,5 +1,6 @@
 import {pathToRegexp} from "path-to-regexp";
 import {h, reactive, VNode} from "@shymean/react-vue";
+import {createLocation} from "./location";
 
 type Route = {
   path?: string,
@@ -19,6 +20,7 @@ const ROUTERS: Router[] = []
 
 // 获取当前的url
 function getCurrentUrl() {
+  if (!IS_BROWSER) return ''
   return location.pathname + location.search
 }
 
@@ -40,6 +42,11 @@ export function routeTo(url: string) {
   ROUTERS.forEach(router => {
     router.push(url)
   })
+}
+
+export function getCurrentLocation() {
+  const url = getCurrentUrl()
+  return createLocation(url)
 }
 
 export const RouterView = ({routes, initUrl}: RouterViewProps) => {

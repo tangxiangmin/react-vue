@@ -1,7 +1,8 @@
-import {IComponent, NODE_YPE, VNode} from "./h";
-import {effect, reactive} from "./reactive";
-import {patch} from './patch'
+import {NODE_YPE, VNode} from "./h";
+import {reactive} from "./reactive";
 import {getHost} from './host'
+
+import {createComponentInstance, setupRenderEffect, unmountComponent} from "./component";
 
 export function createAttrs(dom: HTMLElement, props: any) {
   if (!props) return
@@ -12,7 +13,7 @@ export function createAttrs(dom: HTMLElement, props: any) {
 
 // 将vNode挂载到页面上
 export function mount(newVNode: VNode, parentDOM: Element) {
-  if(!newVNode) return
+  if (!newVNode) return
   switch (newVNode.nodeType) {
     case NODE_YPE.TEXT:
       mountText(newVNode, parentDOM)
@@ -32,6 +33,7 @@ export function unmount(lastVNode: VNode) {
   const {nodeType, $instance} = lastVNode
   if (nodeType === NODE_YPE.COMPONENT) {
     if ($instance) {
+      unmountComponent($instance)
       unmount($instance.child as VNode)
     }
     return
@@ -67,21 +69,11 @@ function mountComponent(nextVNode: VNode, parentDOM: Element) {
   const props = reactive(nextVNode.props)
 
   // 创建组件
-  const render = (nextVNode.type as Function)(props)
+  nextVNode.$instance = createComponentInstance(props)
 
-  nextVNode.$instance = {props, render} as IComponent
+  nextVNode.$instance.render = (nextVNode.type as Function)(props)
 
-  let last: VNode
-  // 收集render方法中的依赖，注册回调
-  effect(() => {
-    const child = render()
-    patch(last, child, parentDOM)
-    last = child
-
-    if (nextVNode.$instance) {
-      nextVNode.$instance.child = child
-    }
-  }, {lazy: false})
+  setupRenderEffect(nextVNode, parentDOM)
 }
 
 export function moveVNode(vNode: VNode, parentDOM: Element) {
