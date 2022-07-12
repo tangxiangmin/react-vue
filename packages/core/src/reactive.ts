@@ -1,5 +1,39 @@
+import {queuePostJob, SchedulerJob} from "./scheduler";
+
+import {isReactive, isRef, isShallow, ReactiveEffect} from '@vue/reactivity'
+
 export * from "@vue/reactivity";
 // import {reactive, effect, ref, toRefs,ReactiveEffect} from "@vue/reactivity";
+
+export const hasChanged = (value: any, oldValue: any): boolean =>
+  !Object.is(value, oldValue)
+
+interface WatchOptions {
+  immediate: boolean
+}
+
+export function watch(source: Function, cb: Function, {immediate = false}: WatchOptions = {} as WatchOptions) {
+  let oldValue: any
+  let getter: () => any = () => source()
+
+  const job: SchedulerJob = () => {
+    const newValue = effect.run()
+    if (hasChanged(newValue, oldValue)) {
+      cb(newValue, oldValue)
+      oldValue = newValue
+    }
+  }
+
+  const scheduler = () => queuePostJob(job)
+
+  // @ts-ignore
+  const effect = new ReactiveEffect(getter, scheduler);
+  if (immediate) {
+    job()
+  } else {
+    oldValue = effect.run()
+  }
+}
 
 // 下面是简单的实现
 //

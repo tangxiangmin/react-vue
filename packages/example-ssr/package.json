@@ -14,6 +14,7 @@
   "dependencies": {
     "@shymean/react-vue": "workspace:^1.0.0",
     "@shymean/react-vue-router": "workspace:^1.0.0",
+    "@shymean/react-vue-store": "workspace:^1.0.0",
     "@vue/reactivity": "^3.2.36",
     "express": "^4.18.1"
   },

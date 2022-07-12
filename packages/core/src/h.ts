@@ -2,10 +2,13 @@ import {flattenArray, isNullOrUndef} from './util'
 import {EffectScope} from "@vue/reactivity";
 
 export interface IComponent {
+  id: number,
   props: any,
   render: Function,
   child?: VNode,
   scope: EffectScope
+
+  update: Function,
 
   // 生命周期函数
   m: Function[] | null
@@ -20,12 +23,15 @@ export interface VNode {
   children: any[],
   nodeType?: NODE_YPE,
   key: undefined | number | string;
+  text?: any;
 
   $el?: Element | HTMLElement | Text | null,
   $instance?: IComponent | undefined,
   $sibling?: VNode //下一个节点
 }
 
+
+const textType = Symbol("__text")
 
 export enum NODE_YPE {
   TEXT,
@@ -58,8 +64,9 @@ export function h(type: any, props: any, ...children: any[]): VNode {
     let node
     if (nodeType === NODE_YPE.TEXT) {
       node = {
-        type: child,
-        nodeType
+        type: textType,
+        nodeType,
+        text: child,
       }
     } else {
       child.nodeType = nodeType

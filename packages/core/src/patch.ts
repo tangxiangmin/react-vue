@@ -14,10 +14,9 @@ function isSameNode(lastVNode: VNode, nextVNode: VNode) {
 }
 
 function patchText(lastVNode: VNode, nextVNode: VNode) {
-  const nextText = nextVNode.type as string;
   const dom = (nextVNode.$el = lastVNode.$el);
 
-  (dom as Element).nodeValue = nextText;
+  (dom as Element).nodeValue = nextVNode.text as string;
 }
 
 function patchElement(lastVNode: VNode, nextVNode: VNode) {
@@ -52,20 +51,47 @@ function patchComponent(lastVNode: VNode, nextVNode: VNode) {
   const lastProps = $instance.props
   const nextProps = nextVNode.props
 
+  const shouldUpdateComponent = () => {
+    if (lastProps === nextProps) return false
+    if (!lastProps) return !!nextProps
+    if (!nextProps) return true
+
+    const nextKeys = Object.keys(nextProps)
+    if (nextKeys.length !== Object.keys(lastProps).length) {
+      return true
+    }
+
+    for (let i = 0; i < nextKeys.length; i++) {
+      const key = nextKeys[i]
+      if (nextProps[key] !== lastProps[key]) {
+        return true
+      }
+    }
+    return false
+  }
+
   // $instance props是响应的，变化后会触发render
-  for (const prop in nextProps) {
-    const lastValue = lastProps[prop]
-    const nextValue = nextProps[prop]
-    if (lastValue !== nextValue) {
-      lastProps[prop] = nextProps[prop]
+  // 缺点在于组件的props无法在参数中进行解构赋值，需要使用toRefs
+  const updateProps = () => {
+    for (const prop in nextProps) {
+      const lastValue = lastProps[prop]
+      const nextValue = nextProps[prop]
+      if (lastValue !== nextValue) {
+        lastProps[prop] = nextProps[prop]
+      }
+    }
+
+    for (const prop in lastProps) {
+      const lastValue = lastProps[prop]
+      if (isNullOrUndef(nextProps[prop]) && !isNullOrUndef(lastValue)) {
+        delete lastProps[prop]
+      }
     }
   }
 
-  for (const prop in lastProps) {
-    const lastValue = lastProps[prop]
-    if (isNullOrUndef(nextProps[prop]) && !isNullOrUndef(lastValue)) {
-      delete lastProps[prop]
-    }
+  if (shouldUpdateComponent()) {
+    updateProps()
+    nextVNode.$instance.update()
   }
 }
 

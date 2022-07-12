@@ -1,5 +1,10 @@
 import {pathToRegexp} from "path-to-regexp";
 
+export interface RouteLocation {
+  path: string,
+  params: Record<string, any>,
+  query: Record<string, any>,
+}
 
 // 将a=1&b=2&c=3形式的search参数解析为{a:1,b:2,c:3}形式的query对象
 export function parseQuery(search: string): Object {
@@ -32,7 +37,7 @@ function parseParam(url: string, path: string): Object {
   return params
 }
 
-export function createLocation(url: string, path?: string) {
+export function createLocation(url: string, path?: string): RouteLocation {
   let arr = url.split('?')
   let pathName = arr[0]
   return {

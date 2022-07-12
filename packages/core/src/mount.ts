@@ -1,5 +1,5 @@
 import {NODE_YPE, VNode} from "./h";
-import {reactive} from "./reactive";
+import {reactive, shallowReactive} from "./reactive";
 import {getHost} from './host'
 
 import {createComponentInstance, setupRenderEffect, unmountComponent} from "./component";
@@ -43,7 +43,7 @@ export function unmount(lastVNode: VNode) {
 }
 
 function mountText(nextVNode: VNode, parentDOM: Element) {
-  const text = getHost().createText(nextVNode.type as string)
+  const text = getHost().createText(nextVNode.text as string)
   nextVNode.$el = text
 
   const anchor = nextVNode.$sibling?.$el as Element
@@ -65,13 +65,11 @@ function mountElement(nextVNode: VNode, parentDOM: Element) {
 }
 
 function mountComponent(nextVNode: VNode, parentDOM: Element) {
-  // 监听props的变化
-  const props = reactive(nextVNode.props)
 
   // 创建组件
-  nextVNode.$instance = createComponentInstance(props)
+  nextVNode.$instance = createComponentInstance(nextVNode.props)
 
-  nextVNode.$instance.render = (nextVNode.type as Function)(props)
+  nextVNode.$instance.render = (nextVNode.type as Function)(nextVNode.$instance.props)
 
   setupRenderEffect(nextVNode, parentDOM)
 }

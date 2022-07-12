@@ -1,9 +1,10 @@
-import {h, reactive, VNode} from "@shymean/react-vue";
+import {h} from "@shymean/react-vue";
 
 import {push} from "./history";
 
-let timer
-const linkHandler = (e, url) => {
+let timer: number
+
+const linkHandler = (e: Event, url: string) => {
   e.preventDefault()
   clearTimeout(timer)
   timer = setTimeout(() => {
@@ -12,11 +13,12 @@ const linkHandler = (e, url) => {
 }
 
 export const Link = (props: any) => {
+  const onClick = (e: Event) => linkHandler(e, props.href)
   return () => {
-    let {href, children = []} = props
+    let {children = []} = props
     return h('a', {
       ...props,
-      onClick: (e) => linkHandler(e, href)
+      onClick: onClick
     }, children)
   }
 }

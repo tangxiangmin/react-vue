@@ -1,9 +1,9 @@
-import {h, reactive, createApp, renderHTML, onMounted, onUpdated, onUnMounted} from "@shymean/react-vue";
+import {h, reactive, createApp, renderHTML, onMounted, onUpdated, onUnMounted, computed, ref} from "@shymean/react-vue";
 import {RouterView, useHistory} from "@shymean/react-vue-router";
 
 // @ts-ignore
 import style from './index.module.css'
-import {useStore} from "./store";
+import {useMainStore} from "./store";
 
 type CountProps = {
   value: number
@@ -154,60 +154,50 @@ const routes = [
 ]
 
 
-const SubApp = () => {
-  const store = useStore()
-  console.log('on create')
-
-  onMounted(() => {
-    console.log('on mounted')
-  })
-
+const SubApp = (props: { x: number }) => {
+  console.log('sub app')
   return () => {
     return (<div>
-      pure render {store.x}
+      pure render {props.x} after text
     </div>)
   }
 }
 
 function App() {
 
-  const history = useHistory()
-  const toHome = () => {
-    history.push('/')
-  }
-  const toAbout = () => {
-    history.push('/about')
-  }
+  // const history = useHistory()
+  // const toHome = () => {
+  //   history.push('/')
+  // }
+  // const toAbout = () => {
+  //   history.push('/about')
+  // }
 
-  const store = useStore()
+  // const store = useMainStore()
+  const count = ref(0)
 
   const add = () => {
-    store.addX()
+    // store.addX()
+    count.value++
   }
 
-  // onMounted(() => {
-  //   console.log('mounted app')
+  // const x = computed(() => {
+  //   return store.x
   // })
-  //
-  // onUpdated(() => {
-  //   console.log('update app')
-  // })
-  // onUnMounted(() => {
-  //   console.log('unmounted')
-  // })
+
 
   return () => {
     return (<div>
       <h1 className={style.title}>hello</h1>
+      {/*<div>*/}
+      {/*  <button onClick={toHome}>to home</button>*/}
+      {/*  <button onclick={toAbout}>to about</button>*/}
+      {/*</div>*/}
       <div>
-        <button onClick={toHome}>to home</button>
-        <button onclick={toAbout}>to about</button>
+        <button onClick={add}>click {count.value}</button>
+        <SubApp x={count.value}/>
       </div>
-      <div>
-        <button onClick={add}>click {store.x}</button>
-        {/*<SubApp/>*/}
-      </div>
-      <RouterView routes={routes}/>
+      {/*<RouterView routes={routes}/>*/}
     </div>)
   }
 }

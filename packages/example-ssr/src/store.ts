@@ -1,6 +1,6 @@
 import {createStoreInstance, defineStore} from '@shymean/react-vue-store'
 
-const instance = createStoreInstance() // 不同store可以复用同一个instance
+const instance = createStoreInstance() // 不同store可以复用同一个
 
 export const useMainStore = defineStore({
   id: 'test',
