@@ -16,7 +16,7 @@ function isSameNode(lastVNode: VNode, nextVNode: VNode) {
 function patchText(lastVNode: VNode, nextVNode: VNode) {
   const dom = (nextVNode.$el = lastVNode.$el);
 
-  (dom as Element).nodeValue = nextVNode.text as string;
+  getHost().setText(dom as Element, nextVNode.text)
 }
 
 function patchElement(lastVNode: VNode, nextVNode: VNode) {
@@ -47,6 +47,7 @@ function patchElement(lastVNode: VNode, nextVNode: VNode) {
 function patchComponent(lastVNode: VNode, nextVNode: VNode) {
   const $instance = lastVNode.$instance as IComponent
   nextVNode.$instance = $instance
+  $instance.vNode = nextVNode
 
   const lastProps = $instance.props
   const nextProps = nextVNode.props

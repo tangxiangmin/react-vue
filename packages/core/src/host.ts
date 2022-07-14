@@ -14,7 +14,7 @@ function normalizeEventName(name: string) {
 }
 
 const dom = {
-  insert(child: Text | Element, parent: Element, anchor: Element | null) {
+  insert(child: Text | Element, parent: Element, anchor?: Element | null) {
     if (anchor) {
       parent.insertBefore(child, anchor)
     } else {
@@ -49,12 +49,15 @@ const dom = {
       if (prop === 'className') prop = 'class'
       dom.setAttribute(prop, nextValue)
     }
+  },
+  setText(node: Element, text: string) {
+    node.nodeValue = text
   }
 }
 
 // SSR环境不做任何处理，最后使用renderHTML渲染
 const ssr = {
-  insert(child: Text | Element, parent: Element, anchor: Element | null) {
+  insert(child: Text | Element, parent: Element, anchor?: Element | null) {
   },
   remove(child: Element) {
   },
@@ -65,6 +68,8 @@ const ssr = {
     return null as unknown as HTMLElement
   },
   setAttribute(dom: Element, prop: string, lastValue: any, nextValue: any) {
+  },
+  setText(node: Element, text: string) {
   }
 }
 

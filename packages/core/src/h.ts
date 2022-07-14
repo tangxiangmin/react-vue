@@ -5,7 +5,7 @@ export interface IComponent {
   id: number,
   props: any,
   render: Function,
-  child?: VNode,
+  vNode: VNode,
   scope: EffectScope
 
   update: Function,
@@ -19,24 +19,26 @@ export interface IComponent {
 
 export interface VNode {
   type: string | Function,
+  nodeType: NODE_YPE,
   props: { [prop: string]: any },
   children: any[],
-  nodeType?: NODE_YPE,
   key: undefined | number | string;
   text?: any;
 
   $el?: Element | HTMLElement | Text | null,
   $instance?: IComponent | undefined,
-  $sibling?: VNode //下一个节点
+  $sibling?: VNode, // 下一个节点
+  $parent?: VNode  // 父节点
 }
 
 
 const textType = Symbol("__text")
 
 export enum NODE_YPE {
-  TEXT,
-  HTML_TAG,
-  COMPONENT
+  DEFAULT,
+  TEXT= 'text',
+  HTML_TAG = 'html',
+  COMPONENT = 'component'
 }
 
 function getNodeType(node: VNode): NODE_YPE {
@@ -51,6 +53,7 @@ export function h(type: any, props: any, ...children: any[]): VNode {
     type,
     props: isNullOrUndef(props) ? {} : props,
     children,
+    nodeType: NODE_YPE.DEFAULT,
     key: isNullOrUndef(props) ? undefined : props.key,
   }
 
@@ -61,24 +64,25 @@ export function h(type: any, props: any, ...children: any[]): VNode {
   let prev: VNode
   node.children = list.map(child => {
     const nodeType = getNodeType(child)
-    let node
+    let result
     if (nodeType === NODE_YPE.TEXT) {
-      node = {
+      result = {
         type: textType,
         nodeType,
         text: child,
       }
     } else {
       child.nodeType = nodeType
-      node = child
+      result = child
     }
     if (prev) {
-      prev.$sibling = node
+      prev.$sibling = result
     }
 
-    prev = node
+    prev = result
+    result.$parent = node
 
-    return node
+    return result
   })
 
   return node

@@ -1,5 +1,5 @@
 import {h, reactive, createApp, renderHTML, onMounted, onUpdated, onUnMounted, computed, ref} from "@shymean/react-vue";
-import {RouterView, useHistory} from "@shymean/react-vue-router";
+import {RouterView, useHistory, Link} from "@shymean/react-vue-router";
 
 // @ts-ignore
 import style from './index.module.css'
@@ -206,10 +206,10 @@ function App() {
 // web应用
 
 // @ts-ignore
-createApp(<App/>).mount(document.querySelector('#root')!)
+// createApp(<App/>).mount(document.querySelector('#root')!)
 
 
 // ssr
 // @ts-ignore
-// const html = renderHTML(<App/>)
-// console.log(html)
+const html = renderHTML(<Link href={"/test"}>标签</Link>)
+console.log(html)

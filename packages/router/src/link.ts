@@ -12,7 +12,11 @@ const linkHandler = (e: Event, url: string) => {
   })
 }
 
-export const Link = (props: any) => {
+type LinkProps = {
+  href: string,
+  children?: any[]
+}
+export const Link = (props: LinkProps) => {
   const onClick = (e: Event) => linkHandler(e, props.href)
   return () => {
     let {children = []} = props

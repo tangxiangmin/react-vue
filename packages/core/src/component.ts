@@ -1,6 +1,6 @@
-import {IComponent, VNode} from "./h";
+import {IComponent, NODE_YPE, VNode} from "./h";
 import {EffectScope, ReactiveEffect, shallowReactive} from "./reactive";
-import {queueJob, SchedulerJob, queuePostJob} from "./scheduler";
+import {queueJob, queuePostJob} from "./scheduler";
 import {patch} from "./patch";
 
 export let currentInstance: IComponent | null = null
@@ -9,7 +9,8 @@ let uid = 1
 const noopRender = () => {
 }
 
-export function createComponentInstance(props: any): IComponent {
+export function createComponentInstance(vNode: VNode): IComponent {
+  const props = vNode.props
   // 监听props的变化
   const reactiveProps = shallowReactive(props)
   const scope = new EffectScope(true)
@@ -20,8 +21,10 @@ export function createComponentInstance(props: any): IComponent {
     props: reactiveProps,
     render,
     scope,
+    vNode,
 
-    update: ()=>{},
+    update: () => {
+    },
 
     m: null,
     um: null,
@@ -42,6 +45,13 @@ function queueHooks(hooks: Function[] | null) {
   }
 }
 
+function findParentDom(node: VNode) {
+  while (node && node.nodeType !== NODE_YPE.HTML_TAG) {
+    node = node.$parent as VNode
+  }
+  return node && node.$el
+}
+
 export function setupRenderEffect(nextVNode: VNode, parentDOM: Element) {
   const instance = nextVNode.$instance as IComponent
   const {render} = instance
@@ -55,11 +65,11 @@ export function setupRenderEffect(nextVNode: VNode, parentDOM: Element) {
     }
 
     const child = render()
-    patch(last, child, parentDOM)
+    patch(last, child, parentDOM || findParentDom(nextVNode))
     last = child
 
     if (instance) {
-      instance.child = child
+      instance.vNode.children = [child]
     }
   }
 

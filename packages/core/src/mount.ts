@@ -34,7 +34,9 @@ export function unmount(lastVNode: VNode) {
   if (nodeType === NODE_YPE.COMPONENT) {
     if ($instance) {
       unmountComponent($instance)
-      unmount($instance.child as VNode)
+      $instance.vNode.children.forEach(node => {
+        unmount(node as VNode)
+      })
     }
     return
   } else if (lastVNode?.$el) {
@@ -67,7 +69,7 @@ function mountElement(nextVNode: VNode, parentDOM: Element) {
 function mountComponent(nextVNode: VNode, parentDOM: Element) {
 
   // 创建组件
-  nextVNode.$instance = createComponentInstance(nextVNode.props)
+  nextVNode.$instance = createComponentInstance(nextVNode)
 
   nextVNode.$instance.render = (nextVNode.type as Function)(nextVNode.$instance.props)
 
