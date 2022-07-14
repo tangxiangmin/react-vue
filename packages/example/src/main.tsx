@@ -1,4 +1,15 @@
-import {h, reactive, createApp, renderHTML, onMounted, onUpdated, onUnMounted, computed, ref} from "@shymean/react-vue";
+import {
+  h,
+  reactive,
+  createApp,
+  renderHTML,
+  onMounted,
+  onUpdated,
+  onUnMounted,
+  computed,
+  ref,
+  provide, inject
+} from "@shymean/react-vue";
 import {RouterView, useHistory, Link} from "@shymean/react-vue-router";
 
 // @ts-ignore
@@ -156,6 +167,8 @@ const routes = [
 
 const SubApp = (props: { x: number }) => {
   console.log('sub app')
+  const val = inject('test')
+  console.log(val)
   return () => {
     return (<div>
       pure render {props.x} after text
@@ -182,8 +195,9 @@ function App() {
   }
 
   // const x = computed(() => {
-  //   return store.x
+  //   return store.4x
   // })
+  provide('test', '123')
 
 
   return () => {
@@ -206,10 +220,10 @@ function App() {
 // web应用
 
 // @ts-ignore
-// createApp(<App/>).mount(document.querySelector('#root')!)
+createApp(<App/>).mount(document.querySelector('#root')!)
 
 
 // ssr
 // @ts-ignore
-const html = renderHTML(<Link href={"/test"}>标签</Link>)
-console.log(html)
+// const html = renderHTML(<Link href={"/test"}>标签</Link>)
+// console.log(html)

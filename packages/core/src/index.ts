@@ -11,3 +11,5 @@ export type {VNode} from "./h";
 export {createApp} from './createApp'
 
 export {renderHTML} from './renderHTML'
+
+export {provide, inject} from './component'

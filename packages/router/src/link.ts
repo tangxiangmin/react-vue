@@ -15,6 +15,7 @@ const linkHandler = (e: Event, url: string) => {
 type LinkProps = {
   href: string,
   children?: any[]
+  [prop: string]: any,
 }
 export const Link = (props: LinkProps) => {
   const onClick = (e: Event) => linkHandler(e, props.href)

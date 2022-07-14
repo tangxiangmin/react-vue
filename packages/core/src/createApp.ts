@@ -17,7 +17,7 @@ function clearContainer(dom: Element) {
   })
 }
 
-export function createApp(node:VNode) {
+export function createApp(node: VNode) {
   return {
     mount(container: HTMLElement) {
       clearContainer(container)

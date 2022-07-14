@@ -16,13 +16,15 @@ export function createComponentInstance(vNode: VNode): IComponent {
   const scope = new EffectScope(true)
   const render = noopRender
 
+  const parent = currentInstance
   const instance = {
     id: uid++,
     props: reactiveProps,
     render,
     scope,
     vNode,
-
+    parent,
+    provides: parent ? parent.provides : Object.create({}),
     update: () => {
     },
 
@@ -56,6 +58,7 @@ export function setupRenderEffect(nextVNode: VNode, parentDOM: Element) {
   const instance = nextVNode.$instance as IComponent
   const {render} = instance
   let last: VNode
+  let lastInstance
   const componentUpdateFn = () => {
     if (!last) {
       queueHooks(instance.m)
@@ -64,13 +67,17 @@ export function setupRenderEffect(nextVNode: VNode, parentDOM: Element) {
       queueHooks(instance.u)
     }
 
+    lastInstance = currentInstance
+    currentInstance = instance
+
     const child = render()
     patch(last, child, parentDOM || findParentDom(nextVNode))
+    child.$parent = instance.vNode
+
     last = child
 
-    if (instance) {
-      instance.vNode.children = [child]
-    }
+    instance.vNode.children = [child]
+    currentInstance = instance
   }
 
   const effect = new ReactiveEffect(
@@ -87,4 +94,26 @@ export function setupRenderEffect(nextVNode: VNode, parentDOM: Element) {
 
 export function unmountComponent(instance: IComponent) {
   queueHooks(instance.um)
+}
+
+
+export function provide(key: string, value: any) {
+  if (!currentInstance) return
+
+  let provides = currentInstance.provides
+
+  const parentProvides = currentInstance.parent && currentInstance.parent.provides
+
+  if (parentProvides === provides) {
+    provides = currentInstance.provides = Object.create(parentProvides)
+  }
+
+  provides[key as string] = value
+}
+
+export function inject<T>(key: string): T | undefined {
+  let instance = currentInstance
+  if (!instance) return
+  const provides = instance.provides
+  return provides[key] as T
 }

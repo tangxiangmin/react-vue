@@ -9,6 +9,8 @@ export interface IComponent {
   scope: EffectScope
 
   update: Function,
+  provides: Record<string, unknown>,
+  parent: IComponent | null
 
   // 生命周期函数
   m: Function[] | null
@@ -36,7 +38,7 @@ const textType = Symbol("__text")
 
 export enum NODE_YPE {
   DEFAULT,
-  TEXT= 'text',
+  TEXT = 'text',
   HTML_TAG = 'html',
   COMPONENT = 'component'
 }
