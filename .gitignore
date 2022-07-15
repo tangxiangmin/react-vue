@@ -6,3 +6,4 @@ esm
 lib
 .npmrc
 *.tgz
+.pnpm-debug.log

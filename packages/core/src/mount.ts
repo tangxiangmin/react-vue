@@ -1,5 +1,4 @@
 import {NODE_YPE, VNode} from "./h";
-import {reactive, shallowReactive} from "./reactive";
 import {getHost} from './host'
 
 import {createComponentInstance, setupRenderEffect, unmountComponent} from "./component";

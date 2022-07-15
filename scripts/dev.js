@@ -10,13 +10,8 @@ async function watch(inputOptions, outputOptions) {
     output: [outputOptions],
     watch: {
       chokidar: true,
-      // include: "packages/nezha/src"
     }
   })
-
-  // watcher.on('event', event => {
-  //     console.log('重新打包中...', event.code)
-  // }) // 处理监听事件
 }
 
 

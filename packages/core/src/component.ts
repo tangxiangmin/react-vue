@@ -47,11 +47,11 @@ function queueHooks(hooks: Function[] | null) {
   }
 }
 
-function findParentDom(node: VNode) {
+function findParentDom(node: VNode): Element {
   while (node && node.nodeType !== NODE_YPE.HTML_TAG) {
     node = node.$parent as VNode
   }
-  return node && node.$el
+  return node && node.$el as Element
 }
 
 export function setupRenderEffect(nextVNode: VNode, parentDOM: Element) {
@@ -77,7 +77,7 @@ export function setupRenderEffect(nextVNode: VNode, parentDOM: Element) {
     last = child
 
     instance.vNode.children = [child]
-    currentInstance = instance
+    currentInstance = lastInstance
   }
 
   const effect = new ReactiveEffect(

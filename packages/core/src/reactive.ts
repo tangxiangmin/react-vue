@@ -1,9 +1,8 @@
 import {queuePostJob, SchedulerJob} from "./scheduler";
 
-import {isReactive, isRef, isShallow, ReactiveEffect} from '@vue/reactivity'
+import {ReactiveEffect} from '@vue/reactivity'
 
 export * from "@vue/reactivity";
-// import {reactive, effect, ref, toRefs,ReactiveEffect} from "@vue/reactivity";
 
 export const hasChanged = (value: any, oldValue: any): boolean =>
   !Object.is(value, oldValue)

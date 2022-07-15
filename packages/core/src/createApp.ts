@@ -1,4 +1,4 @@
-import {h, VNode} from "./h";
+import {VNode} from "./h";
 import {mount} from "./mount";
 import {patch} from "./patch";
 import {hydrate} from './hydrate'

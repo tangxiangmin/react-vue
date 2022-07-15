@@ -3,7 +3,7 @@ type Key = string | number;
 interface ReactElement<P = any, T = any> {
   type: T;
   props: P;
-  // key: Key | null | undefined;
+  key?: Key | null | undefined;
 }
 
 interface CustomFunctionComponent {

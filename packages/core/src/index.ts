@@ -1,5 +1,3 @@
-import {VNode} from './h'
-
 export * from './reactive'
 export * from './lifecycle'
 

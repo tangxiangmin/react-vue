@@ -15,10 +15,13 @@ async function publish(target) {
   await execa(`npm`, ['version', 'patch', '-no-git-tag-version'], options)
   // 使用pnpm，将工作区协议的版本号自动替换
   await execa(`pnpm`, ['pack'], options)
-  await execa(`pnpm`, ['publish'], options)
+  await execa(`pnpm`, ['publish', '--no-git-checks', '--access', 'public'], options)
 }
 
 function publishAll(targets) {
+  if(!targets.length) {
+    targets = ['core', 'router', 'store', 'jsx']
+  }
   for (const target of targets) {
     publish(target)
   }

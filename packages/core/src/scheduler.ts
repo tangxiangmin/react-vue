@@ -2,16 +2,14 @@ export interface SchedulerJob extends Function {
   id?: number
 }
 
-type SchedulerJobs = SchedulerJob | SchedulerJob[]
 const queue: SchedulerJob[] = []
 const postQueue: SchedulerJob[] = []
 let isFlushing: boolean = false
-let currentFlushPromise: Promise<any> | null = null
 const resolvedPromise: Promise<any> = Promise.resolve()
 
 function queueFlush() {
   if (!isFlushing) {
-    currentFlushPromise = resolvedPromise.then(flushJobs)
+    resolvedPromise.then(flushJobs)
   }
 }
 
