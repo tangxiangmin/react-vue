@@ -21,12 +21,11 @@ async function start() {
   })
 
   for (let config of modules) {
-    let rollupConfig = createRollupConfig(config.name, config.input)
-    await build(rollupConfig, {
+    await build(createRollupConfig(config.name, config.input, true), {
       file: path.resolve(__dirname, `../packages/${config.name}/esm/index.js`),
       format: 'es'
     })
-    await build(rollupConfig, {
+    await build(createRollupConfig(config.name, config.input, false), {
       file: path.resolve(__dirname, `../packages/${config.name}/lib/index.js`),
       format: 'cjs'
     })

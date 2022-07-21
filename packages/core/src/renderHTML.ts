@@ -1,3 +1,4 @@
+import {pauseTracking, resetTracking} from "@vue/reactivity";
 import {NODE_YPE, VNode} from './h'
 import {isEventProp, isFilterProp} from "./host";
 import {mount} from "./mount";
@@ -47,11 +48,14 @@ function VNode2HTML(root: VNode): string {
 }
 
 function renderHTML(root: VNode): string {
+  pauseTracking()
   startHydrate()
   // 首先将调用diff获取初始化组件节点，获取完整的节点树
   mount(root, {} as Element)
   stopHydrate()
-  return VNode2HTML(root)
+  const html =  VNode2HTML(root)
+  resetTracking()
+  return html
 }
 
 export {

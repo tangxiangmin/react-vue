@@ -1,13 +1,14 @@
 {
   "name": "@shymean/react-vue",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "",
   "main": "lib/index.js",
-  "module": "src/index.ts",
-  "types": "esm/index.js",
+  "module": "esm/index.js",
+  "types": "esm/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": ["esm","lib"],
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -3,7 +3,7 @@ const resolve = require('@rollup/plugin-node-resolve')
 
 const path = require('path')
 
-module.exports = (name, input) => {
+module.exports = (name, input, declaration = false) => {
   const external = ['@shymean/react-vue', '@vue/reactivity']
 
   return {
@@ -20,7 +20,7 @@ module.exports = (name, input) => {
           exclude: [path.resolve(__dirname, `../packages/${name}/node_modules`)],
           include: [path.resolve(__dirname, `../packages/${name}/src`)],
           compilerOptions: {
-            "declaration": true
+            "declaration": declaration
           }
         }
 

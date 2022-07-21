@@ -1,6 +1,6 @@
 {
   "name": "@shymean/react-vue-jsx",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "",
   "types": "src/jsx-runtime.d.ts",
   "main": "src/jsx-runtime.d.ts",

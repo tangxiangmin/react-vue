@@ -1,20 +1,19 @@
 {
   "name": "@shymean/react-vue-router",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
-  "types": "src/index.ts",
+  "types": "esm/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": ["esm","lib"],
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@shymean/react-vue": "workspace:^1.0.0",
-    "@shymean/react-vue-router": "^1.0.3",
-    "example": "link:/Users/bcz/github/ShyMean/packages/ssr",
     "path-to-regexp": "^6.2.1"
   }
 }
