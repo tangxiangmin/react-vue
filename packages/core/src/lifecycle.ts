@@ -1,4 +1,4 @@
-import {currentInstance} from './component'
+import {getCurrentInstance} from './component'
 import {pauseTracking, resetTracking} from "./reactive";
 
 export const enum LifecycleHooks {
@@ -8,7 +8,7 @@ export const enum LifecycleHooks {
 }
 
 function injectHook(type: LifecycleHooks, hook: Function) {
-  const target = currentInstance
+  const target = getCurrentInstance()
   if (!target) return
   const hooks = target[type] || (target[type] = [])
   const wrapHook = () => {

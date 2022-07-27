@@ -1,6 +1,6 @@
 {
   "name": "@shymean/react-vue-store",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -8,7 +8,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "files": ["esm","lib"],
+  "files": [
+    "esm",
+    "lib"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",

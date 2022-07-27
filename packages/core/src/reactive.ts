@@ -4,6 +4,8 @@ import {ReactiveEffect} from '@vue/reactivity'
 
 export * from "@vue/reactivity";
 
+let globalShouldTrack = true
+
 export const hasChanged = (value: any, oldValue: any): boolean =>
   !Object.is(value, oldValue)
 
@@ -27,12 +29,27 @@ export function watch(source: Function, cb: Function, {immediate = false}: Watch
 
   // @ts-ignore
   const effect = new ReactiveEffect(getter, scheduler);
+  effect.active = getGlobalShouldTrack()
+
   if (immediate) {
     job()
   } else {
     oldValue = effect.run()
   }
 }
+
+export function getGlobalShouldTrack() {
+  return globalShouldTrack
+}
+
+export function pauseGlobalShouldTrack() {
+  globalShouldTrack = false
+}
+
+export function enableGlobalShouldTrack() {
+  globalShouldTrack = true
+}
+
 
 // 下面是简单的实现
 //

@@ -20,7 +20,8 @@ async function publish(target) {
 
 function publishAll(targets) {
   if(!targets.length) {
-    targets = ['core', 'router', 'store', 'jsx']
+    // targets = ['core', 'router', 'store', 'jsx']
+    targets = ['core', 'router', 'store']
   }
   for (const target of targets) {
     publish(target)

@@ -10,7 +10,8 @@ export interface IComponent {
 
   update: Function,
   provides: Record<string, unknown>,
-  parent: IComponent | null
+  parent: IComponent | null,
+  slots: VNode[]
 
   // 生命周期函数
   m: Function[] | null
@@ -18,16 +19,22 @@ export interface IComponent {
   u: Function[] | null
 }
 
+export interface IComponentContext {
+  instance: IComponent
+}
+
 
 export interface VNode {
   type: string | Function,
   nodeType: NODE_YPE,
   props: { [prop: string]: any },
-  children: any[],
   key: undefined | number | string;
+
+  children: VNode[],
   text?: any;
 
   $el?: Element | HTMLElement | Text | null,
+
   $instance?: IComponent | undefined,
   $sibling?: VNode, // 下一个节点
   $parent?: VNode  // 父节点
@@ -54,17 +61,18 @@ export function h(type: any, props: any, ...children: any[]): VNode {
   const node: VNode = {
     type,
     props: isNullOrUndef(props) ? {} : props,
-    children,
+    children: [],
     nodeType: NODE_YPE.DEFAULT,
     key: isNullOrUndef(props) ? undefined : props.key,
   }
 
   node.nodeType = getNodeType(node)
-  node.props.children = children
 
   const list = flattenArray(children)
-  let prev: VNode
+
+
   node.children = list.map(child => {
+    if (child.nodeType) return child
     const nodeType = getNodeType(child)
     let result
     if (nodeType === NODE_YPE.TEXT) {
@@ -77,15 +85,23 @@ export function h(type: any, props: any, ...children: any[]): VNode {
       child.nodeType = nodeType
       result = child
     }
-    if (prev) {
-      prev.$sibling = result
-    }
-
-    prev = result
-    result.$parent = node
 
     return result
   })
 
+  bindVNode(node)
+
   return node
+}
+
+export function bindVNode(parent: VNode) {
+  let prev: VNode
+  const {children} = parent
+  children.forEach(child => {
+    child.$parent = parent
+    if (prev) {
+      prev.$sibling = child
+    }
+    prev = child
+  })
 }

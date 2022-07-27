@@ -1,12 +1,17 @@
-import {IComponent, NODE_YPE, VNode} from "./h";
-import {EffectScope, ReactiveEffect, shallowReactive} from "./reactive";
+import {bindVNode, IComponent, NODE_YPE, VNode} from "./h";
+import {EffectScope, ReactiveEffect, shallowReactive, getGlobalShouldTrack} from "./reactive";
 import {queueJob, queuePostJob} from "./scheduler";
 import {patch} from "./patch";
 
-export let currentInstance: IComponent | null = null
-
+let currentInstance: IComponent | null = null
 let uid = 1
-const noopRender = () => {
+
+export function setCurrentInstance(instance: IComponent | null) {
+  currentInstance = instance
+}
+
+export function getCurrentInstance() {
+  return currentInstance
 }
 
 export function createComponentInstance(vNode: VNode): IComponent {
@@ -14,9 +19,11 @@ export function createComponentInstance(vNode: VNode): IComponent {
   // 监听props的变化
   const reactiveProps = shallowReactive(props)
   const scope = new EffectScope(true)
-  const render = noopRender
+  const render = () => {
+  }
 
-  const parent = currentInstance
+  const parent = findParentComponent(vNode)
+
   const instance = {
     id: uid++,
     props: reactiveProps,
@@ -24,6 +31,7 @@ export function createComponentInstance(vNode: VNode): IComponent {
     scope,
     vNode,
     parent,
+    slots: vNode.children,
     provides: parent ? parent.provides : Object.create({}),
     update: () => {
     },
@@ -33,11 +41,11 @@ export function createComponentInstance(vNode: VNode): IComponent {
     u: null,
   }
 
-  currentInstance = instance
+
+  setCurrentInstance(instance)
 
   return instance
 }
-
 
 function queueHooks(hooks: Function[] | null) {
   if (Array.isArray(hooks)) {
@@ -54,31 +62,39 @@ function findParentDom(node: VNode): Element {
   return node && node.$el as Element
 }
 
+function findParentComponent(node: VNode) {
+  while (node && node.$parent && node.$parent.nodeType !== NODE_YPE.COMPONENT) {
+    node = node.$parent as VNode
+  }
+  return node && node.$parent && node.$parent.$instance || null
+}
+
 export function setupRenderEffect(nextVNode: VNode, parentDOM: Element) {
   const instance = nextVNode.$instance as IComponent
   const {render} = instance
   let last: VNode
-  let lastInstance
   const componentUpdateFn = () => {
+    const vNode = instance.vNode
     if (!last) {
       queueHooks(instance.m)
     } else {
-
       queueHooks(instance.u)
     }
 
-    lastInstance = currentInstance
-    currentInstance = instance
+    let lastInstance = getCurrentInstance()
+    setCurrentInstance(instance)
 
     const child = render()
+    vNode.children = [child]
+    bindVNode(vNode)
+
     patch(last, child, parentDOM || findParentDom(nextVNode))
-    child.$parent = instance.vNode
 
     last = child
 
-    instance.vNode.children = [child]
-    currentInstance = lastInstance
+    setCurrentInstance(lastInstance)
   }
+
 
   const effect = new ReactiveEffect(
     componentUpdateFn,
@@ -86,6 +102,8 @@ export function setupRenderEffect(nextVNode: VNode, parentDOM: Element) {
     // @ts-ignore
     nextVNode.$instance.scope
   )
+  // 处理在部分场景下无需追踪的情况
+  effect.active = getGlobalShouldTrack()
 
   instance.update = () => effect.run()
   instance.update()

@@ -14,16 +14,16 @@ const linkHandler = (e: Event, url: string) => {
 
 type LinkProps = {
   href: string,
-  children?: any[]
   [prop: string]: any,
 }
-export const Link = (props: LinkProps) => {
+
+export const Link = (props: LinkProps, {instance}) => {
   const onClick = (e: Event) => linkHandler(e, props.href)
+
   return () => {
-    let {children = []} = props
     return h('a', {
       ...props,
       onClick: onClick
-    }, children)
+    }, instance.slots || [])
   }
 }

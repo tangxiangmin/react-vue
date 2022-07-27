@@ -8,6 +8,7 @@ import {
   onUnMounted,
   computed,
   ref,
+  pauseTracking,
   provide, inject
 } from "@shymean/react-vue";
 import {RouterView, useHistory, Link} from "@shymean/react-vue-router";
@@ -166,12 +167,10 @@ const routes = [
 
 
 const SubApp = (props: { x: number }) => {
-  console.log('sub app')
-  const val = inject('test')
-  console.log(val)
+  // const val = inject('test')
   return () => {
     return (<div>
-      pure render {props.x} after text
+      <span>pure render {props.x} after text</span>
     </div>)
   }
 }
@@ -197,21 +196,14 @@ function App() {
   // const x = computed(() => {
   //   return store.4x
   // })
-  provide('test', '123')
+  // provide('test', '123')
 
 
   return () => {
     return (<div>
-      <h1 className={style.title}>hello</h1>
-      {/*<div>*/}
-      {/*  <button onClick={toHome}>to home</button>*/}
-      {/*  <button onclick={toAbout}>to about</button>*/}
-      {/*</div>*/}
-      <div>
-        <button onClick={add}>click {count.value}</button>
-        <SubApp x={count.value}/>
-      </div>
-      {/*<RouterView routes={routes}/>*/}
+      {/*<h1 className={style.title}>hello</h1>*/}
+      <button onClick={add}>click {count.value}</button>
+      <SubApp x={count.value}/>
     </div>)
   }
 }
@@ -220,10 +212,28 @@ function App() {
 // web应用
 
 // @ts-ignore
-createApp(<App/>).mount(document.querySelector('#root')!)
+// createApp(<App/>).mount(document.querySelector('#root')!)
 
 
 // ssr
-// @ts-ignore
-// const html = renderHTML(<Link href={"/test"}>标签</Link>)
-// console.log(html)
+
+pauseTracking()
+function render() {
+  const node = <App/>
+  // @ts-ignore
+  const html = renderHTML(node)
+  // console.log(node)
+  console.log(html)
+}
+
+render()
+
+let count =1
+let timer = setInterval(()=>{
+  if(count++ > 10000) {
+    clearInterval(timer)
+    return
+  }
+  render()
+}, 10)
+

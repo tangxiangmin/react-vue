@@ -48,6 +48,7 @@ function patchComponent(lastVNode: VNode, nextVNode: VNode) {
   const $instance = lastVNode.$instance as IComponent
   nextVNode.$instance = $instance
   $instance.vNode = nextVNode
+  $instance.slots = nextVNode.children
 
   const lastProps = $instance.props
   const nextProps = nextVNode.props

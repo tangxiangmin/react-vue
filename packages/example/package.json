@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite --port 3008",
+    "dev": "vite --port 3008 --force",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },

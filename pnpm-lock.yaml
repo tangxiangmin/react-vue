@@ -74,13 +74,9 @@ importers:
   packages/router:
     specifiers:
       '@shymean/react-vue': workspace:^1.0.0
-      '@shymean/react-vue-router': ^1.0.3
-      example: link:/Users/bcz/github/ShyMean/packages/ssr
       path-to-regexp: ^6.2.1
     dependencies:
       '@shymean/react-vue': link:../core
-      '@shymean/react-vue-router': 'link:'
-      example: link:../../../ShyMean/packages/ssr
       path-to-regexp: 6.2.1
 
   packages/store:

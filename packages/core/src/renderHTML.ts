@@ -1,8 +1,8 @@
-import {pauseTracking, resetTracking} from "@vue/reactivity";
 import {NODE_YPE, VNode} from './h'
 import {isEventProp, isFilterProp} from "./host";
 import {mount} from "./mount";
 import {startHydrate, stopHydrate} from "./hydrate";
+import {setCurrentInstance} from "./component";
 
 // 在ssr中，我们需要的不是DOM节点，而是HTML字符串
 function VNode2HTML(root: VNode): string {
@@ -48,14 +48,12 @@ function VNode2HTML(root: VNode): string {
 }
 
 function renderHTML(root: VNode): string {
-  pauseTracking()
+  setCurrentInstance(null)
   startHydrate()
   // 首先将调用diff获取初始化组件节点，获取完整的节点树
   mount(root, {} as Element)
   stopHydrate()
-  const html =  VNode2HTML(root)
-  resetTracking()
-  return html
+  return VNode2HTML(root)
 }
 
 export {

@@ -1,4 +1,4 @@
-import {NODE_YPE, VNode} from "./h";
+import {IComponentContext, NODE_YPE, VNode} from "./h";
 import {getHost} from './host'
 
 import {createComponentInstance, setupRenderEffect, unmountComponent} from "./component";
@@ -69,8 +69,9 @@ function mountComponent(nextVNode: VNode, parentDOM: Element) {
 
   // 创建组件
   nextVNode.$instance = createComponentInstance(nextVNode)
+  const context: IComponentContext = {instance: nextVNode.$instance}
 
-  nextVNode.$instance.render = (nextVNode.type as Function)(nextVNode.$instance.props)
+  nextVNode.$instance.render = (nextVNode.type as Function)(nextVNode.$instance.props, context)
 
   setupRenderEffect(nextVNode, parentDOM)
 }
