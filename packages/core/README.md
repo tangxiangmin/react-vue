@@ -31,3 +31,8 @@ function App() {
 
 createApp(<App/>).mount(document.querySelector('#root')!)
 ```
+
+
+## API
+
+TODO

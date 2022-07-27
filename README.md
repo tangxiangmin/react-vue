@@ -8,7 +8,9 @@
 * [x] `SSR`渲染
 * [x] `css moudle` vite默认支持
 * [x] `router`路由
-* [ ] `store`状态管理
+* [x] `store`状态管理
+
+最后使用该项目通过SSR重构了自己的博客[Shymean ](https://github.com/tangxiangmin/ShyMean)，[在线访问地址](https://www.shymean.com/)
 
 示例：
 
@@ -28,11 +30,10 @@ function Count({value = 0}: CountProps) {
     data.count++
   }
 
-  const render = () => {
+  return () => {
     return (<button onClick={onClick}>click {data.count} </button>)
   }
 
-  return render as unknown as ReactElement
 }
 
 function List() {
@@ -61,7 +62,7 @@ function List() {
     data.list = shuffleList(data.list)
   }
 
-  const render = () => {
+  return () => {
     return (<div>
       <button onClick={add}>add</button>
       <button onClick={remove}>remove</button>
@@ -77,12 +78,10 @@ function List() {
       </ul>
     </div>)
   }
-  return render as unknown as ReactElement
 }
 
 function App() {
-
-  const render = () => {
+  return  () => {
     return (<div>
       <h1>hello</h1>
       <div>
@@ -92,8 +91,6 @@ function App() {
       <List/>
     </div>)
   }
-
-  return render as unknown as ReactElement
 }
 
 

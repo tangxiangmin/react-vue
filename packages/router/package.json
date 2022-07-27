@@ -12,9 +12,17 @@
     "esm",
     "lib"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tangxiangmin/react-vue.git"
+  },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "645234650@qq.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tangxiangmin/react-vue/issues"
+  },
+  "homepage": "https://github.com/tangxiangmin/react-vue#readme",
   "dependencies": {
     "@shymean/react-vue": "workspace:^1.0.0",
     "path-to-regexp": "^6.2.1"
